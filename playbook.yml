@@ -114,7 +114,7 @@
         owner: "{{ ansible_user }}"
         mode: "0644"
 
-    # NOTE: Tailscale certs (surface2.tail497b89.ts.net.crt/.key) must be
+    # NOTE: Tailscale certs (surface2/.key) must be
     # generated manually first with `tailscale cert <hostname>` and placed
     # in {{ docker_dir }}/certs/ — Ansible can copy them into place but
     # cannot generate them, since that requires an authenticated tailnet
