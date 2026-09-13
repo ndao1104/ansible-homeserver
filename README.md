@@ -43,10 +43,3 @@ Adjust variables (hostnames, ports, retention policy) in
     └── backup-vaultwarden.sh.j2
 ```
 
-## Requires
-
-- `community.docker` collection:
-  ```bash
-  ansible-galaxy collection install community.docker
-  ```
-- SSH access + sudo privileges on the target host
