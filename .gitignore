@@ -1,0 +1,37 @@
+# --- Secrets & credentials ---
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+secrets.yml
+vault.yml
+vault_pass.txt
+.vault_pass
+*_vault.yml
+**/vault/**
+
+# --- Ansible-specific sensitive/generated files ---
+*.retry
+.ansible/
+ansible.cfg.local
+host_vars/*/vault.yml
+group_vars/*/vault.yml
+
+# --- Inventory overrides that might contain real IPs/hostnames you don't want public ---
+inventory.local.ini
+hosts.local
+
+# --- In case real runtime data ever gets copied in by mistake ---
+*data/
+*-data/
+*.sqlite3
+*.db
+.env
+.env.*
+
+# --- OS/editor clutter ---
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/

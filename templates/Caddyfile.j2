@@ -1,0 +1,4 @@
+https://{{ tailscale_hostname }} {
+    tls /certs/{{ tailscale_hostname }}.crt /certs/{{ tailscale_hostname }}.key
+    reverse_proxy vaultwarden:80
+}

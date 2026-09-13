@@ -1,0 +1,8 @@
+#!/bin/bash
+cd {{ docker_dir }}
+docker compose stop vaultwarden
+tar -czvf {{ backup_dir }}/vaultwarden-$(date +%F).tar.gz vaultwarden-data
+docker compose start vaultwarden
+
+# Keep only the last {{ backup_retention_days }} days of backups
+find {{ backup_dir }} -name "vaultwarden-*.tar.gz" -mtime +{{ backup_retention_days }} -delete
