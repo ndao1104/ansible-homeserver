@@ -3,7 +3,7 @@ https://{{ tailscale_hostname }} {
 
     redir /vaultwarden /vaultwarden/ 308
 
-    handle_path /vaultwarden/* {
+    handle /vaultwarden/* {
         reverse_proxy vaultwarden:80
     }
 

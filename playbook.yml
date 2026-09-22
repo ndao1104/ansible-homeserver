@@ -105,14 +105,14 @@
         - paperless-db
         - paperless-redis
 
-    - name: Set correct ownership for paperless-redis (Redis container UID)
-      ansible.builtin.file:
-        path: "{{ docker_dir }}/paperless-redis"
-        state: directory
-        owner: "999"
-        group: "999"
-        mode: "0755"
-      become: true
+    # - name: Set correct ownership for paperless-redis (Redis container UID)
+    #   ansible.builtin.file:
+    #     path: "{{ docker_dir }}/paperless-redis"
+    #     state: directory
+    #     owner: "999"
+    #     group: "999"
+    #     mode: "0755"
+    #   become: true
 
     - name: Deploy docker-compose.yml
       ansible.builtin.template:
