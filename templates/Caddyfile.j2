@@ -7,7 +7,7 @@ https://{{ tailscale_hostname }} {
         reverse_proxy vaultwarden:80
     }
 
-    handle_path /paperless/* {
+    handle /paperless/* {
         reverse_proxy paperless-webserver:8000
     }
 }
