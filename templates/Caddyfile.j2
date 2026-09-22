@@ -2,7 +2,7 @@ https://{{ tailscale_hostname }} {
     tls /certs/{{ tailscale_hostname }}.crt /certs/{{ tailscale_hostname }}.key
 
     handle /vaultwarden {
-        redir /vaultwarden/#/login
+        redir /vaultwarden/
     }
 
     handle /vaultwarden/* {
