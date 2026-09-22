@@ -25,7 +25,7 @@ repeatable, version-controlled setup.
 ## Usage
 
 ```bash
-ansible-playbook -i inventory.ini playbook.yml --ask-become-pass
+ansible-playbook -i inventory.ini playbook.yml --ask-vault-pass --ask-become-pass 
 ```
 
 Adjust variables (hostnames, ports, retention policy) in
