@@ -79,8 +79,10 @@ services:
       PAPERLESS_DBUSER: paperless
       PAPERLESS_DBPASS: "{{ paperless_db_password }}"
       PAPERLESS_SECRET_KEY: "{{ paperless_secret_key }}"
-      PAPERLESS_TIME_ZONE: "{{ paperless_timezone | default('UTC') }}"
+      PAPERLESS_TIME_ZONE: "{{ paperless_timezone | default('EST') }}"
       PAPERLESS_URL: https://{{ tailscale_hostname }}/paperless
+      PAPERLESS_CORS_ALLOWED_HOSTS: https://{{ tailscale_hostname }}
+      PAPERLESS_FORCE_SCRIPT_NAME: /paperless
     networks:
       - internal
 
