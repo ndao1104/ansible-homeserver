@@ -60,29 +60,29 @@ services:
     networks:
       - internal
 
-paperless-webserver:
-  image: ghcr.io/paperless-ngx/paperless-ngx:latest
-  restart: unless-stopped
-  depends_on:
-    - paperless-db
-    - paperless-broker
-  volumes:
-    - ./paperless-data:/usr/src/paperless/data
-    - ./paperless-media:/usr/src/paperless/media
-    - ./paperless-export:/usr/src/paperless/export
-    - ./paperless-consume:/usr/src/paperless/consume
-  environment:
-    PAPERLESS_REDIS: redis://paperless-broker:6379
-    PAPERLESS_DBHOST: paperless-db
-    PAPERLESS_DBUSER: paperless
-    PAPERLESS_DBPASS: "{{ paperless_db_password }}"
-    PAPERLESS_SECRET_KEY: "{{ paperless_secret_key }}"
-    PAPERLESS_TIME_ZONE: "{{ paperless_timezone | default('America/Toronto') }}"
-    PAPERLESS_URL: https://{{ tailscale_hostname }}
-    PAPERLESS_FORCE_SCRIPT_NAME: /paperless
-    PAPERLESS_STATIC_URL: /paperless/static/
-  networks:
-    - internal
+  paperless-webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    depends_on:
+      - paperless-db
+      - paperless-broker
+    volumes:
+      - ./paperless-data:/usr/src/paperless/data
+      - ./paperless-media:/usr/src/paperless/media
+      - ./paperless-export:/usr/src/paperless/export
+      - ./paperless-consume:/usr/src/paperless/consume
+    environment:
+      PAPERLESS_REDIS: redis://paperless-broker:6379
+      PAPERLESS_DBHOST: paperless-db
+      PAPERLESS_DBUSER: paperless
+      PAPERLESS_DBPASS: "{{ paperless_db_password }}"
+      PAPERLESS_SECRET_KEY: "{{ paperless_secret_key }}"
+      PAPERLESS_TIME_ZONE: "{{ paperless_timezone | default('America/Toronto') }}"
+      PAPERLESS_URL: https://{{ tailscale_hostname }}
+      PAPERLESS_FORCE_SCRIPT_NAME: /paperless
+      PAPERLESS_STATIC_URL: /paperless/static/
+    networks:
+      - internal
 
 networks:
   internal:
