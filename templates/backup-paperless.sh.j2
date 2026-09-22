@@ -1,0 +1,20 @@
+#!/bin/bash
+cd {{ docker_dir }}
+
+# Dump the Postgres DB cleanly (safe to do while running)
+docker compose exec -T paperless-db pg_dump -U paperless paperless > {{ backup_dir }}/paperless-db-$(date +%F).sql
+
+# Stop webserver so media/data files aren't mid-write during tar
+docker compose stop paperless-webserver
+
+tar -czvf {{ backup_dir }}/paperless-$(date +%F).tar.gz \
+  paperless-data paperless-media paperless-export paperless-consume \
+  {{ backup_dir }}/paperless-db-$(date +%F).sql
+
+docker compose start paperless-webserver
+
+# Clean up the loose .sql file now that it's inside the tarball
+rm {{ backup_dir }}/paperless-db-$(date +%F).sql
+
+# Keep only the last {{ backup_retention_days }} days of backups
+find {{ backup_dir }} -name "paperless-*.tar.gz" -mtime +{{ backup_retention_days }} -delete
