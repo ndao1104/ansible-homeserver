@@ -1,10 +1,15 @@
 https://{{ tailscale_hostname }} {
     tls /certs/{{ tailscale_hostname }}.crt /certs/{{ tailscale_hostname }}.key
-    handle /paperless/* {
-        reverse_proxy paperless-webserver:8000
+
+    handle /vaultwarden {
+        redir /vaultwarden/#/login
     }
 
     handle /vaultwarden/* {
         reverse_proxy vaultwarden:80
+    }
+
+    handle /paperless/* {
+        reverse_proxy paperless-webserver:8000
     }
 }
