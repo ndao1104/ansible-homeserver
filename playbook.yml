@@ -12,7 +12,6 @@
   become: true
 
   tasks:
-
     # ---------------------------------------------------------------
     # 1. Power management — keep running when lid is closed
     # ---------------------------------------------------------------
@@ -99,6 +98,12 @@
         - certs
         - adguard-work
         - adguard-conf
+        - paperless-data
+        - paperless-media
+        - paperless-export
+        - paperless-consume
+        - paperless-db
+        - paperless-redis
 
     - name: Deploy docker-compose.yml
       ansible.builtin.template:
@@ -149,6 +154,21 @@
         hour: "2"
         user: "{{ ansible_user }}"
         job: "/home/{{ ansible_user }}/backup-vaultwarden.sh >> {{ backup_dir }}/backup.log 2>&1"
+
+    - name: Deploy Paperless backup script
+      ansible.builtin.template:
+        src: backup-paperless.sh.j2
+        dest: "/home/{{ ansible_user }}/backup-paperless.sh"
+        owner: "{{ ansible_user }}"
+        mode: "0755"
+
+    - name: Schedule nightly Paperless backup
+      ansible.builtin.cron:
+        name: "Paperless backup"
+        minute: "30"
+        hour: "2"
+        user: "{{ ansible_user }}"
+        job: "/home/{{ ansible_user }}/backup-paperless.sh >> {{ backup_dir }}/backup.log 2>&1"
 
   handlers:
     - name: Restart systemd-logind

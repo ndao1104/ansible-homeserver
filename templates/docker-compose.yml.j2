@@ -10,6 +10,7 @@ services:
     environment:
       - WEBSOCKET_ENABLED={{ vaultwarden_websocket_enabled }}
       - SIGNUPS_ALLOWED={{ vaultwarden_signups_allowed }}
+      - DOMAIN=https://{{ tailscale_hostname }}/vaultwarden
     networks:
       - internal
 
@@ -38,6 +39,48 @@ services:
       - "{{ adguard_dns_port }}:53/tcp"
       - "{{ adguard_dns_port }}:53/udp"
       - "{{ adguard_web_port }}:3000/tcp"
+    networks:
+      - internal
+
+  paperless-broker:
+    image: docker.io/library/redis:7
+    restart: unless-stopped
+    volumes:
+      - ./paperless-redis:/data
+    networks:
+      - internal
+
+  paperless-db:
+    image: docker.io/library/postgres:16
+    restart: unless-stopped
+    volumes:
+      - ./paperless-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: "{{ paperless_db_password }}"
+    networks:
+      - internal
+
+  paperless-webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    depends_on:
+      - paperless-db
+      - paperless-broker
+    volumes:
+      - ./paperless-data:/usr/src/paperless/data
+      - ./paperless-media:/usr/src/paperless/media
+      - ./paperless-export:/usr/src/paperless/export
+      - ./paperless-consume:/usr/src/paperless/consume
+    environment:
+      PAPERLESS_REDIS: redis://paperless-broker:6379
+      PAPERLESS_DBHOST: paperless-db
+      PAPERLESS_DBUSER: paperless
+      PAPERLESS_DBPASS: "{{ paperless_db_password }}"
+      PAPERLESS_SECRET_KEY: "{{ paperless_secret_key }}"
+      PAPERLESS_TIME_ZONE: "{{ paperless_timezone | default('UTC') }}"
+      PAPERLESS_URL: https://{{ tailscale_hostname }}/paperless
     networks:
       - internal
 
