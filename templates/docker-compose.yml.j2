@@ -97,6 +97,7 @@ services:
       - ./beszel-data:/beszel_data
       - ./beszel-socket:/beszel_socket
     environment:
+      TZ: "{{ timezone }}"
       APP_URL: https://{{ tailscale_hostname }}/beszel
     networks:
       - internal
@@ -111,6 +112,7 @@ services:
       - ./beszel-socket:/beszel_socket
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
+      TZ: "{{ timezone }}"
       LISTEN: /beszel_socket/beszel.sock
       HUB_URL: http://localhost:8090
       TOKEN: "{{ beszel_token }}"
