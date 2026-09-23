@@ -27,5 +27,11 @@ https://{{ tailscale_hostname }} {
             }
         }
     }
+ 
+    redir /nextcloud /nextcloud/ 308
+
+    handle /nextcloud/* {
+        reverse_proxy nextcloud:80
+    }
 
 }
