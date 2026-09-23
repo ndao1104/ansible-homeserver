@@ -13,11 +13,11 @@ https://{{ tailscale_hostname }} {
         reverse_proxy paperless-webserver:8000
     }
 
-    handle_path /netdata/* {
+    handle /netdata/* {
     reverse_proxy netdata:19999
     }
 
-    handle_path /grafana/* {
+    handle /grafana/* {
         reverse_proxy grafana:3000
     } 
 }
