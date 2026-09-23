@@ -121,8 +121,8 @@ services:
       - TZ={{ timezone }}
       - LISTEN=/beszel_socket/beszel.sock
       - HUB_URL=http://localhost:8090
-      - TOKEN="{{ beszel_token }}"
-      - KEY="{{ beszel_key }}"
+      - TOKEN={{ beszel_token }}
+      - KEY={{ beszel_key }}
 
   # cadvisor:
   #   image: gcr.io/cadvisor/cadvisor:latest
