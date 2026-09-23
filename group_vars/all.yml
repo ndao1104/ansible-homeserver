@@ -7,7 +7,7 @@ timezone: America/Toronto
 
 # Tailscale
 # Replace with your own tailnet hostname, e.g. myhost.tailxxxxx.ts.net
-tailscale_hostname: "{{ hostname }}"
+tailscale_hostname: "{{ ansible_host }}"
 
 # Vaultwarden
 vaultwarden_signups_allowed: "false"
