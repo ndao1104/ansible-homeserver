@@ -117,6 +117,11 @@
         - beszel-data
         - beszel-socket
         - beszel-agent-data
+        - nextcloud-data
+        - nextcloud-db
+        - nextcloud-redis
+
+
 
     - name: Deploy docker-compose.yml
       ansible.builtin.template:
@@ -189,6 +194,21 @@
         hour: "2"
         user: "{{ ansible_user }}"
         job: "/home/{{ ansible_user }}/backup-paperless.sh >> {{ backup_dir }}/backup.log 2>&1"
+    
+    - name: Deploy Nextcloud backup script
+      ansible.builtin.template:
+        src: backup-nextcloud.sh.j2
+        dest: "/home/{{ ansible_user }}/backup-nextcloud.sh"
+        owner: "{{ ansible_user }}"
+        mode: "0755"
+
+    - name: Schedule nightly Nextcloud backup
+      ansible.builtin.cron:
+        name: "Nextcloud backup"
+        minute: "0"
+        hour: "3"
+        user: "{{ ansible_user }}"
+        job: "/home/{{ ansible_user }}/backup-nextcloud.sh >> {{ backup_dir }}/backup.log 2>&1"
 
   handlers:
     - name: Restart systemd-logind
@@ -200,3 +220,5 @@
       ansible.builtin.systemd:
         name: systemd-resolved
         state: restarted
+
+      

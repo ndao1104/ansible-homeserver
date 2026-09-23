@@ -2,19 +2,19 @@
 cd {{ docker_dir }}
 
 # Dump the Postgres DB cleanly (safe to do while running)
-docker compose exec -T paperless-db pg_dump -U paperless paperless > {{ backup_dir }}/paperless-db-$(date +%F).sql
+docker compose exec -T nextcloud-db pg_dump -U nextcloud nextcloud > {{ backup_dir }}/nextcloud-db-$(date +%F).sql
 
-# Stop webserver so media/data files aren't mid-write during tar
-docker compose stop paperless-webserver
+# Stop Nextcloud so files aren't mid-write during tar
+docker compose stop nextcloud
 
-tar -czvf {{ backup_dir }}/paperless-$(date +%F).tar.gz \
-  paperless-data paperless-media paperless-export paperless-consume \
-  {{ backup_dir }}/paperless-db-$(date +%F).sql
+tar -czvf {{ backup_dir }}/nextcloud-$(date +%F).tar.gz \
+  nextcloud-data \
+  {{ backup_dir }}/nextcloud-db-$(date +%F).sql
 
-docker compose start paperless-webserver
+docker compose start nextcloud
 
 # Clean up the loose .sql file now that it's inside the tarball
-rm {{ backup_dir }}/paperless-db-$(date +%F).sql
+rm {{ backup_dir }}/nextcloud-db-$(date +%F).sql
 
 # Keep only the last {{ backup_retention_days }} days of backups
-find {{ backup_dir }} -name "paperless-*.tar.gz" -mtime +{{ backup_retention_days }} -delete
+find {{ backup_dir }} -name "nextcloud-*.tar.gz" -mtime +{{ backup_retention_days }} -delete
