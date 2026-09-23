@@ -7,7 +7,7 @@ timezone: America/Toronto
 
 # Tailscale
 # Replace with your own tailnet hostname, e.g. myhost.tailxxxxx.ts.net
-tailnet_hostname: !vault |
+tailscale_hostname: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   61626565666465356438346130383733623238373036313138373830373034356436346465623232
   6265353039643639653938373865336564643334323263660a643366303235656333393366306235
