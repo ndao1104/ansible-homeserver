@@ -89,7 +89,7 @@ services:
     container_name: cadvisor
     restart: unless-stopped
     command:
-      - "--disable_metrics=disk,diskIO,network,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpu_topology,advtcp"
+      - "--disable_metrics=diskIO,network,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpu_topology,advtcp"
       - "--docker_only=true"
     volumes:
       - /:/rootfs:ro
