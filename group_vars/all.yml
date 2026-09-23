@@ -34,10 +34,6 @@ paperless_secret_key: !vault |
   30623338366631633863396432326565346237616461623566613931383433376437393761373434
   6135336461313032323537306263306164643862613565313737
 
-beszel_token: !vault |
-  $ANSIBLE_VAULT;1.1;AES256
-  <your encrypted token here>
+beszel_token: 123
 
-beszel_key: !vault |
-  $ANSIBLE_VAULT;1.1;AES256
-  <your encrypted key here>
+beszel_key: 123
