@@ -10,6 +10,7 @@ vault_pass.txt
 .vault_pass
 *_vault.yml
 **/vault/**
+host_vars/*
 
 # --- Ansible-specific sensitive/generated files ---
 *.retry
