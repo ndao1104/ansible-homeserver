@@ -61,10 +61,10 @@ services:
     volumes:
       - ./paperless-db:/var/lib/postgresql/data
     environment:
-      TZ: "{{ timezone }}"
-      POSTGRES_DB: paperless
-      POSTGRES_USER: paperless
-      POSTGRES_PASSWORD: "{{ paperless_db_password }}"
+      - TZ={{ timezone }}
+      - POSTGRES_DB: paperless
+      - POSTGRES_USER: paperless
+      - POSTGRES_PASSWORD: "{{ paperless_db_password }}"
     networks:
       - internal
 
@@ -80,16 +80,16 @@ services:
       - ./paperless-export:/usr/src/paperless/export
       - ./paperless-consume:/usr/src/paperless/consume
     environment:
-      TZ: "{{ timezone }}"
-      PAPERLESS_REDIS: redis://paperless-broker:6379
-      PAPERLESS_DBHOST: paperless-db
-      PAPERLESS_DBUSER: paperless
-      PAPERLESS_DBPASS: "{{ paperless_db_password }}"
-      PAPERLESS_SECRET_KEY: "{{ paperless_secret_key }}"
-      PAPERLESS_TIME_ZONE: "{{ timezone }}"
-      PAPERLESS_URL: https://{{ tailscale_hostname }}
-      PAPERLESS_FORCE_SCRIPT_NAME: /paperless
-      PAPERLESS_STATIC_URL: /paperless/static/
+      - TZ={{ timezone }}
+      - PAPERLESS_REDIS=redis://paperless-broker:6379
+      - PAPERLESS_DBHOST=paperless-db
+      - PAPERLESS_DBUSER=paperless
+      - PAPERLESS_DBPASS="{{ paperless_db_password }}"
+      - PAPERLESS_SECRET_KEY="{{ paperless_secret_key }}"
+      - PAPERLESS_TIME_ZONE="{{ paperless_timezone | default('America/Toronto') }}"
+      - PAPERLESS_URL=https://{{ tailscale_hostname }}
+      - PAPERLESS_FORCE_SCRIPT_NAME=/paperless
+      - PAPERLESS_STATIC_URL=/paperless/static/
     networks:
       - internal
 
@@ -103,8 +103,8 @@ services:
       - ./beszel-data:/beszel_data
       - ./beszel-socket:/beszel_socket
     environment:
-      TZ: "{{ timezone }}"
-      APP_URL: https://{{ tailscale_hostname }}/beszel
+      - TZ={{ timezone }}
+      - APP_URL=https://{{ tailscale_hostname }}/beszel
     networks:
       - internal
 
@@ -118,8 +118,55 @@ services:
       - ./beszel-socket:/beszel_socket
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
-      TZ: "{{ timezone }}"
-      LISTEN: /beszel_socket/beszel.sock
-      HUB_URL: http://localhost:8090
-      TOKEN: "{{ beszel_token }}"
-      KEY: "{{ beszel_key }}"
+      - TZ={{ timezone }}
+      - LISTEN=/beszel_socket/beszel.sock
+      - HUB_URL=http://localhost:8090
+      - TOKEN="{{ beszel_token }}"
+      - KEY="{{ beszel_key }}"
+    networks:
+      - internal
+
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:latest
+  #   container_name: cadvisor
+  #   restart: unless-stopped
+  #   command:
+  #     - "--disable_metrics=diskIO,network,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpu_topology,advtcp"
+  #     - "--docker_only=true"
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:ro
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #   networks:
+  #     - internal
+
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: prometheus
+  #   restart: unless-stopped
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #     - "--web.enable-lifecycle"
+  #   volumes:
+  #     - ./prometheus-data:/prometheus
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks:
+  #     - internal
+
+  #  grafana:
+  #   image: grafana/grafana:latest
+  #    container_name: grafana
+  #    restart: unless-stopped
+  #    environment:
+  #       - TZ={{ timezone }}
+  #       - GF_SERVER_ROOT_URL=https://{{ tailscale_hostname }}/grafana/
+  #       - GF_SERVER_SERVE_FROM_SUB_PATH=true
+  #   volumes:
+  #       - ./grafana-data:/var/lib/grafana
+  #   networks:
+  #      - internal
+
+networks:
+  internal:
+    driver: bridge
