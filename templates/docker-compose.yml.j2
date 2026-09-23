@@ -93,6 +93,8 @@ services:
     volumes:
       - ./beszel-data:/beszel_data
       - ./beszel-socket:/beszel_socket
+    environment:
+      APP_URL: https://{{ tailscale_hostname }}/beszel
     networks:
       - internal
 
