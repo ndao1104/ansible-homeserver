@@ -86,6 +86,14 @@
         owner: "{{ ansible_user }}"
         mode: "0755"
 
+    - name: Set correct ownership for prometheus-data (Prometheus container UID)
+      ansible.builtin.file:
+        path: "{{ docker_dir }}/prometheus-data"
+        state: directory
+        owner: "65534"
+        group: "65534"
+        mode: "0755"
+
     - name: Create data/cert subdirectories
       ansible.builtin.file:
         path: "{{ docker_dir }}/{{ item }}"
