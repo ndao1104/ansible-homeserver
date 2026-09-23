@@ -127,7 +127,7 @@ services:
     container_name: grafana
     restart: unless-stopped
     environment:
-      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/grafana/
+      - GF_SERVER_ROOT_URL=https://{{ tailscale_hostname }}/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
     volumes:
       - ./grafana-data:/var/lib/grafana
