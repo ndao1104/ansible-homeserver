@@ -1,60 +1,68 @@
+
 # Home Server Ansible Playbook
 
-Rebuilds a Vaultwarden + Caddy + AdGuard Home + Paperless-ngx stack on
-a fresh Ubuntu machine. Turns a set of manual SSH steps into a
-repeatable, version-controlled setup.
+Rebuilds a Vaultwarden + Caddy + AdGuard Home + Paperless-ngx + Grafana + Prometheus + cAdvisor + Beszel stack on a fresh Ubuntu machine. Turns a set of manual SSH steps into a repeatable, version-controlled setup.
 
-> **Before you run this against your own machine:** replace the
-> placeholder values in `inventory.ini` and `group_vars/all.yml`
-> (IP address, username, Tailscale hostname, Paperless secrets) with
-> your own. This repo ships with generic placeholders on purpose so
-> it's safe to keep public.
+Before you run this against your own machine: replace the placeholder values in `inventory.ini` and `group_vars/all.yml` (IP address, username, Tailscale hostname, Paperless secrets, Beszel token/key) with your own. This repo ships with generic placeholders on purpose so it's safe to keep public.
 
 ## What this automates
 
-- Power settings so the machine keeps running with the lid closed
-- Docker + Docker Compose installation
-- Freeing port 53 (disabling systemd-resolved's stub listener) so
-  AdGuard Home can bind to it
-- Deploying `docker-compose.yml` and `Caddyfile` from templates
-- Starting the full container stack (Vaultwarden, Caddy, AdGuard,
-  Paperless-ngx)
-- Setting up nightly backup scripts + cron jobs for Vaultwarden and
-  Paperless
+* Power settings so the machine keeps running with the lid closed
+* Docker + Docker Compose installation
+* Freeing port 53 (disabling systemd-resolved's stub listener) so AdGuard Home can bind to it
+* Deploying `docker-compose.yml` and `Caddyfile` from templates
+* Starting the full container stack (Vaultwarden, Caddy, AdGuard, Paperless-ngx, Grafana, Prometheus, cAdvisor, Beszel hub + agent)
+* Setting up nightly backup scripts + cron jobs for Vaultwarden and Paperless
 
 ## Usage
 
 ```bash
-ansible-playbook -i inventory.ini playbook.yml --ask-vault-pass --ask-become-pass 
+ansible-playbook -i inventory.ini playbook.yml --ask-vault-pass --ask-become-pass
 ```
 
-Adjust variables (hostnames, ports, retention policy) in
-`group_vars/all.yml` before running.
+Adjust variables (hostnames, ports, retention policy) in `group_vars/all.yml` before running.
 
 ## Secrets
 
-Paperless-ngx requires a database password and a secret key, set as
-`paperless_db_password` and `paperless_secret_key` in
-`group_vars/all.yml`. These should be encrypted with `ansible-vault`
-rather than committed in plaintext:
+Paperless-ngx requires a database password and a secret key, and Beszel requires a universal token and public key. These are set in `group_vars/all.yml` as `paperless_db_password`, `paperless_secret_key`, `beszel_token`, and `beszel_key`. All of these should be encrypted with `ansible-vault` rather than committed in plaintext:
 
 ```bash
-ansible-vault encrypt_string 'your-password' --name 'paperless_db_password'
+ansible-vault encrypt_string 'your-secret-value' --name 'variable_name'
 ```
 
-Paste the resulting block into `group_vars/all.yml` in place of a
-plain value, then pass `--ask-vault-pass` when running the playbook.
+Paste the resulting block into `group_vars/all.yml` in place of a plain value, then pass `--ask-vault-pass` when running the playbook.
+
+The Beszel token and public key can only be generated after the hub is running for the first time — log in to the hub's web UI, go to **Settings → Tokens**, and copy the universal token and public key shown there. Until real values are set, the `beszel-agent` container will run but fail to connect.
 
 ## Accessing services
 
-Vaultwarden, Paperless, and AdGuard's web UI are all served through
-Caddy under one Tailscale hostname, split by subpath:
+Vaultwarden, Paperless, Beszel, and Grafana are all served through Caddy under one Tailscale hostname, split by subpath:
 
-- Vaultwarden: `https://{{ tailscale_hostname }}/vaultwarden`
-- Paperless: `https://{{ tailscale_hostname }}/paperless`
+* Vaultwarden: `https://{{ tailscale_hostname }}/vaultwarden`
+* Paperless: `https://{{ tailscale_hostname }}/paperless`
+* Beszel: `https://{{ tailscale_hostname }}/beszel`
+* Grafana: `https://{{ tailscale_hostname }}/grafana`
 
-AdGuard's web UI is exposed on its own port
-(`{{ adguard_web_port }}`) rather than a subpath.
+AdGuard's web UI is exposed on its own port (`{{ adguard_web_port }}`) rather than a subpath.
+
+## Monitoring
+
+This stack includes two separate monitoring approaches:
+
+**Beszel** — a lightweight, self-hosted monitoring platform. Consists of two pieces:
+
+* **beszel** (hub) — serves the web dashboard, bound to `127.0.0.1:8090` on the host and reverse-proxied by Caddy under `/beszel`. Stores historical metrics in a local volume (`beszel-data`).
+* **beszel-agent** — runs in `network_mode: host` to report accurate network stats, and mounts the Docker socket (read-only) to collect per-container CPU/memory/network stats. Communicates with the hub over a Unix socket (`beszel-socket`) rather than exposing a network port.
+
+The hub requires an `APP_URL` environment variable set to its full subpath URL (`https://{{ tailscale_hostname }}/beszel`) so its frontend correctly resolves asset paths when served behind a reverse proxy.
+
+**Grafana + Prometheus + cAdvisor** — the heavier, more customizable stack:
+
+* **cAdvisor** — exposes container-level metrics. Configured with `--docker_only=true` and `--disable_metrics=...` to only collect CPU/memory and skip the heavier disk/network/process metrics.
+* **Prometheus** — scrapes cAdvisor on an internal Docker network and stores the time series. Its own UI/API is not exposed through Caddy; access it directly on its container port if needed for debugging (`http://<host>:9090`).
+* **Grafana** — the only monitoring UI exposed through Caddy, under `/grafana`. Prometheus is added as a data source (`http://prometheus:9090`) and dashboards are imported from grafana.com (e.g. dashboard ID `14282` for cAdvisor).
+
+The `prometheus-data` directory must be owned by the same UID the Prometheus container runs as (see `user:` in `docker-compose.yml.j2`) or it will fail to start with a permissions error on its storage directory.
 
 ## File structure
 
@@ -67,6 +75,7 @@ AdGuard's web UI is exposed on its own port
 └── templates/
     ├── docker-compose.yml.j2
     ├── Caddyfile.j2
+    ├── prometheus.yml.j2
     ├── backup-vaultwarden.sh.j2
     └── backup-paperless.sh.j2
 ```
