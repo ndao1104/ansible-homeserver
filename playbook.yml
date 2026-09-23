@@ -114,6 +114,9 @@
         - paperless-redis
         # - prometheus-data
         # - grafana-data
+        - beszel-data
+        - beszel-socket
+        - beszel-agent-data
 
     - name: Deploy docker-compose.yml
       ansible.builtin.template:
