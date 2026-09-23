@@ -84,45 +84,45 @@ services:
     networks:
       - internal
 
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: cadvisor
-    restart: unless-stopped
-    command:
-      - "--disable_metrics=diskIO,network,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpu_topology,advtcp"
-      - "--docker_only=true"
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    networks:
-      - internal
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:latest
+  #   container_name: cadvisor
+  #   restart: unless-stopped
+  #   command:
+  #     - "--disable_metrics=diskIO,network,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpu_topology,advtcp"
+  #     - "--docker_only=true"
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:ro
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #   networks:
+  #     - internal
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    restart: unless-stopped
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--web.enable-lifecycle"
-    volumes:
-      - ./prometheus-data:/prometheus
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - internal
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: prometheus
+  #   restart: unless-stopped
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #     - "--web.enable-lifecycle"
+  #   volumes:
+  #     - ./prometheus-data:/prometheus
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks:
+  #     - internal
 
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    restart: unless-stopped
-    environment:
-      - GF_SERVER_ROOT_URL=https://{{ tailscale_hostname }}/grafana/
-      - GF_SERVER_SERVE_FROM_SUB_PATH=true
-    volumes:
-      - ./grafana-data:/var/lib/grafana
-    networks:
-      - internal
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
+  #   restart: unless-stopped
+  #   environment:
+  #     - GF_SERVER_ROOT_URL=https://{{ tailscale_hostname }}/grafana/
+  #     - GF_SERVER_SERVE_FROM_SUB_PATH=true
+  #   volumes:
+  #     - ./grafana-data:/var/lib/grafana
+  #   networks:
+  #     - internal
 
 networks:
   internal:

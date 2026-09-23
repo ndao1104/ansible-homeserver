@@ -86,13 +86,13 @@
         owner: "{{ ansible_user }}"
         mode: "0755"
 
-    - name: Set correct ownership for prometheus-data (Prometheus container UID)
-      ansible.builtin.file:
-        path: "{{ docker_dir }}/prometheus-data"
-        state: directory
-        owner: "65534"
-        group: "65534"
-        mode: "0755"
+    # - name: Set correct ownership for prometheus-data (Prometheus container UID)
+    #   ansible.builtin.file:
+    #     path: "{{ docker_dir }}/prometheus-data"
+    #     state: directory
+    #     owner: "65534"
+    #     group: "65534"
+    #     mode: "0755"
 
     - name: Create data/cert subdirectories
       ansible.builtin.file:
@@ -112,8 +112,8 @@
         - paperless-consume
         - paperless-db
         - paperless-redis
-        - prometheus-data
-        - grafana-data
+        # - prometheus-data
+        # - grafana-data
 
     - name: Deploy docker-compose.yml
       ansible.builtin.template:
@@ -129,12 +129,12 @@
         owner: "{{ ansible_user }}"
         mode: "0644"
 
-    - name: Deploy Prometheus config
-      ansible.builtin.template:
-        src: prometheus.yml.j2
-        dest: "{{ docker_dir }}/prometheus.yml"
-        owner: "{{ ansible_user }}"
-        mode: "0644"
+    # - name: Deploy Prometheus config
+    #   ansible.builtin.template:
+    #     src: prometheus.yml.j2
+    #     dest: "{{ docker_dir }}/prometheus.yml"
+    #     owner: "{{ ansible_user }}"
+    #     mode: "0644"
 
     # NOTE: Tailscale certs (surface2/.key) must be
     # generated manually first with `tailscale cert <hostname>` and placed
