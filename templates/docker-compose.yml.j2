@@ -61,10 +61,10 @@ services:
     volumes:
       - ./paperless-db:/var/lib/postgresql/data
     environment:
-      - TZ={{ timezone }}
-      - POSTGRES_DB: paperless
-      - POSTGRES_USER: paperless
-      - POSTGRES_PASSWORD: "{{ paperless_db_password }}"
+      TZ: "{{ timezone }}"
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: "{{ paperless_db_password }}"
     networks:
       - internal
 
