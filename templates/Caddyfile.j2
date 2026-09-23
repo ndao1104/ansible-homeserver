@@ -30,7 +30,7 @@ https://{{ tailscale_hostname }} {
  
     redir /nextcloud /nextcloud/ 308
 
-    handle /nextcloud/* {
+    handle_path /nextcloud/* {
         reverse_proxy nextcloud:80
     }
 
