@@ -104,15 +104,8 @@
         - paperless-consume
         - paperless-db
         - paperless-redis
-
-    # - name: Set correct ownership for paperless-redis (Redis container UID)
-    #   ansible.builtin.file:
-    #     path: "{{ docker_dir }}/paperless-redis"
-    #     state: directory
-    #     owner: "999"
-    #     group: "999"
-    #     mode: "0755"
-    #   become: true
+        - prometheus-data
+        - grafana-data
 
     - name: Deploy docker-compose.yml
       ansible.builtin.template:
@@ -125,6 +118,13 @@
       ansible.builtin.template:
         src: Caddyfile.j2
         dest: "{{ docker_dir }}/Caddyfile"
+        owner: "{{ ansible_user }}"
+        mode: "0644"
+
+    - name: Deploy Prometheus config
+      ansible.builtin.template:
+        src: prometheus.yml.j2
+        dest: "{{ docker_dir }}/prometheus.yml"
         owner: "{{ ansible_user }}"
         mode: "0644"
 
