@@ -17,7 +17,7 @@ https://{{ tailscale_hostname }} {
         reverse_proxy paperless-webserver:8000
     }
 
-    handle_path /beszel* {
+    handle /beszel* {
         request_body {
             max_size 10MB
         }
