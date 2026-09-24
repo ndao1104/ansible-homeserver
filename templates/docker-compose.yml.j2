@@ -112,7 +112,7 @@ services:
       - ./paperless-consume:/usr/src/paperless/consume
     environment:
       TZ: "{{ timezone }}"
-      PAPERLESS_REDIS: redis://paperless-broker:6379
+      PAPERLESS_REDIS: redis://paperless-redis:6379
       PAPERLESS_DBHOST: paperless-db
       PAPERLESS_DBUSER: paperless
       PAPERLESS_DBPASS: "{{ paperless_db_password }}"
