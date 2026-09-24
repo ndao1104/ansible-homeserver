@@ -1,11 +1,4 @@
 ---
-# Home Server Playbook
-# Rebuilds the Vaultwarden + Caddy + AdGuard Home stack on a fresh
-# Ubuntu machine, including power/lid settings, Docker, DNS config,
-# and automated backups.
-#
-# Usage:
-#   ansible-playbook -i inventory.ini playbook.yml --ask-become-pass
 
 - name: Configure home server
   hosts: homeservers
