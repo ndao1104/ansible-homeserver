@@ -260,6 +260,25 @@ services:
     networks:
       - internal
 
+  opencloud:
+    image: opencloudeu/opencloud:2
+    container_name: opencloud
+    restart: unless-stopped
+    volumes:
+      - ./opencloud-config:/etc/opencloud
+      - ./opencloud-data:/var/lib/opencloud
+    environment:
+      TZ: "{{ timezone }}"
+      OC_DOMAIN: "{{ tailscale_hostname }}"
+      INITIAL_ADMIN_PASSWORD: "{{ opencloud_admin_password }}"
+      OC_CONFIG_DIR: /etc/opencloud
+      OC_DATA_DIR: /var/lib/opencloud
+      PROXY_HTTP_ADDR: "0.0.0.0:9200"
+      PROXY_TLS: "false" # Caddy terminates TLS
+      OC_URL: "https://{{ tailscale_hostname }}/opencloud"
+    networks:
+      - internal
+
 networks:
   internal:
     driver: bridge

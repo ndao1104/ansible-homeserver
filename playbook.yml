@@ -86,14 +86,6 @@
         owner: "{{ ansible_user }}"
         mode: "0755"
 
-    # - name: Set correct ownership for prometheus-data (Prometheus container UID)
-    #   ansible.builtin.file:
-    #     path: "{{ docker_dir }}/prometheus-data"
-    #     state: directory
-    #     owner: "65534"
-    #     group: "65534"
-    #     mode: "0755"
-
     - name: Create data/cert subdirectories
       ansible.builtin.file:
         path: "{{ docker_dir }}/{{ item }}"
@@ -121,8 +113,19 @@
         - nextcloud-db
         - nextcloud-redis
         - uptime-kuma-data
+        - opencloud-config
+        - opencloud-data
 
-
+    - name: Set ownership for OpenCloud directories
+      ansible.builtin.file:
+        path: "{{ docker_dir }}/{{ item }}"
+        state: directory
+        owner: "1000"
+        group: "1000"
+        mode: "0755"
+      loop:
+        - opencloud-config
+        - opencloud-data
 
     - name: Deploy docker-compose.yml
       ansible.builtin.template:
@@ -210,6 +213,21 @@
         hour: "3"
         user: "{{ ansible_user }}"
         job: "/home/{{ ansible_user }}/backup-nextcloud.sh >> {{ backup_dir }}/backup.log 2>&1"
+
+    - name: Deploy OpenCloud backup script
+      ansible.builtin.template:
+        src: backup-opencloud.sh.j2
+        dest: "/home/{{ ansible_user }}/backup-opencloud.sh"
+        owner: "{{ ansible_user }}"
+        mode: "0755"
+
+    - name: Schedule nightly OpenCloud backup
+      ansible.builtin.cron:
+        name: "OpenCloud backup"
+        minute: "30"
+        hour: "3"
+        user: "{{ ansible_user }}"
+        job: "/home/{{ ansible_user }}/backup-opencloud.sh >> {{ backup_dir }}/backup.log 2>&1"
 
   handlers:
     - name: Restart systemd-logind

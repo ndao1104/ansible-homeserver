@@ -1,0 +1,10 @@
+#!/bin/bash
+cd {{ docker_dir }}
+docker compose stop opencloud
+tar -czvf {{ backup_dir }}/opencloud-$(date +%F).tar.gz \
+    opencloud-config \
+    opencloud-data
+docker compose start opencloud
+
+# Keep only the last {{ backup_retention_days }} days of backups
+find {{ backup_dir }} -name "opencloud-*.tar.gz" -mtime +{{ backup_retention_days }} -delete
