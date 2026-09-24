@@ -1,4 +1,3 @@
-
 # Home Server Ansible Playbook
 
 Rebuilds a Vaultwarden + Caddy + AdGuard Home + Paperless-ngx + Grafana + Prometheus + cAdvisor + Beszel stack on a fresh Ubuntu machine. Turns a set of manual SSH steps into a repeatable, version-controlled setup.
@@ -17,7 +16,7 @@ Before you run this against your own machine: replace the placeholder values in 
 ## Usage
 
 ```bash
-ansible-playbook -i inventory.ini playbook.yml --ask-vault-pass --ask-become-pass
+ansible-playbook playbook.yml --ask-become-pass
 ```
 
 Adjust variables (hostnames, ports, retention policy) in `group_vars/all.yml` before running.
