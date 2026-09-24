@@ -19,6 +19,7 @@ host_vars/*.yml
 .ansible/
 ansible.cfg.local
 ansible.cfg
+homeservers.yml
 
 # --- Inventory overrides that might contain real IPs/hostnames ---
 inventory.local.ini
