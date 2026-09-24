@@ -34,4 +34,9 @@ https://{{ tailscale_hostname }} {
         reverse_proxy nextcloud:80
     }
 
+    redir /kuma /kuma/ 308
+
+    handle /kuma/* {
+        reverse_proxy uptime-kuma:3001
+    }
 }

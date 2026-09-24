@@ -10,6 +10,12 @@ services:
       - WEBSOCKET_ENABLED={{ vaultwarden_websocket_enabled }}
       - SIGNUPS_ALLOWED={{ vaultwarden_signups_allowed }}
       - DOMAIN=https://{{ tailscale_hostname }}/vaultwarden/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/alive"]
+      start_period: 10s
+      interval: 120s
+      timeout: 10s
+      retries: 3
     networks:
       - internal
 
@@ -26,6 +32,12 @@ services:
       - ./certs:/certs
     environment:
       - TZ={{ timezone }}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 5s
+      interval: 120s
+      timeout: 10s
+      retries: 3
     networks:
       - internal
 
@@ -45,8 +57,9 @@ services:
     networks:
       - internal
 
-  paperless-broker:
+  paperless-redis:
     image: docker.io/library/redis:7
+    container_name: paperless-redis
     restart: unless-stopped
     volumes:
       - ./paperless-redis:/data
@@ -54,9 +67,16 @@ services:
       - TZ={{ timezone }}
     networks:
       - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 5s
+      interval: 120s
+      timeout: 10s
+      retries: 3
 
   paperless-db:
     image: docker.io/library/postgres:16
+    container_name: paperless-db
     restart: unless-stopped
     volumes:
       - ./paperless-db:/var/lib/postgresql/data
@@ -65,11 +85,22 @@ services:
       POSTGRES_DB: "{{ paperless_db_name }}"
       POSTGRES_USER: "{{ paperless_user_name }}"
       POSTGRES_PASSWORD: "{{ paperless_db_password }}"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U {{ paperless_user_name }} -d {{ paperless_db_name }}",
+        ]
+      start_period: 10s
+      interval: 120s
+      timeout: 10s
+      retries: 3
     networks:
       - internal
 
   paperless-webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless-webserver
     restart: unless-stopped
     depends_on:
       - paperless-db
@@ -90,6 +121,12 @@ services:
       PAPERLESS_URL: https://{{ tailscale_hostname }}
       PAPERLESS_FORCE_SCRIPT_NAME: /paperless
       PAPERLESS_STATIC_URL: /paperless/static/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/paperless/api/"]
+      start_period: 30s
+      interval: 120s
+      timeout: 10s
+      retries: 3
     networks:
       - internal
 
@@ -105,6 +142,13 @@ services:
     environment:
       TZ: "{{ timezone }}"
       APP_URL: https://{{ tailscale_hostname }}/beszel
+    healthcheck:
+      # The URL is relative to the container, not the host
+      test: ["CMD", "/beszel", "health", "--url", "http://localhost:8090"]
+      start_period: 5s
+      interval: 120s
+      timeout: 10s
+      retries: 3
     networks:
       - internal
 
@@ -124,6 +168,19 @@ services:
       TOKEN: "{{ beszel_token }}"
       KEY: "{{ beszel_key }}"
 
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - ./uptime-kuma-data:/app/data
+    environment:
+      TZ: "{{ timezone }}"
+    networks:
+      - internal
+
   nextcloud-db:
     image: postgres:16
     container_name: nextcloud-db
@@ -135,6 +192,16 @@ services:
       TZ: "{{ timezone }}"
     volumes:
       - ./nextcloud-db:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U {{ nextcloud_db_user }} -d {{ nextcloud_db_name }}",
+        ]
+      start_period: 10s
+      interval: 120s
+      timeout: 10s
+      retries: 3
     networks:
       - internal
 
@@ -146,6 +213,12 @@ services:
       TZ: "{{ timezone }}"
     volumes:
       - ./nextcloud-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 5s
+      interval: 120s
+      timeout: 10s
+      retries: 3
     networks:
       - internal
 
@@ -170,6 +243,12 @@ services:
       OVERWRITEPROTOCOL: https
       OVERWRITEWEBROOT: /nextcloud
       OVERWRITECLIURL: "https://{{ tailscale_hostname }}/nextcloud"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/status.php"]
+      start_period: 30s
+      interval: 120s
+      timeout: 10s
+      retries: 3
     networks:
       - internal
 
