@@ -17,21 +17,11 @@ Before you run this against your own machine: replace the placeholder values in 
 
 ```bash
 ansible-playbook playbook.yml --ask-become-pass
+ansible-vault encrypt vault.yml --vault-password-file ~/.ansible-vault-pass
+ansible-vault view vault.yml --vault-password-file ~/.ansible-vault-pass
 ```
 
 Adjust variables (hostnames, ports, retention policy) in `group_vars/all.yml` before running.
-
-## Secrets
-
-Paperless-ngx requires a database password and a secret key, and Beszel requires a universal token and public key. These are set in `group_vars/all.yml` as `paperless_db_password`, `paperless_secret_key`, `beszel_token`, and `beszel_key`. All of these should be encrypted with `ansible-vault` rather than committed in plaintext:
-
-```bash
-ansible-vault encrypt_string 'your-secret-value' --name 'variable_name'
-```
-
-Paste the resulting block into `group_vars/all.yml` in place of a plain value, then pass `--ask-vault-pass` when running the playbook.
-
-The Beszel token and public key can only be generated after the hub is running for the first time — log in to the hub's web UI, go to **Settings → Tokens**, and copy the universal token and public key shown there. Until real values are set, the `beszel-agent` container will run but fail to connect.
 
 ## Accessing services
 
