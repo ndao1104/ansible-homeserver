@@ -1,7 +1,7 @@
 ---
 # General
-docker_dir: "/home/{{ ansible_user }}/docker"
-backup_dir: "/home/{{ ansible_user }}/backups"
+docker_dir: "/home/{{ ansible_user_id  }}/docker"
+backup_dir: "/home/{{ ansible_user_id  }}/backups"
 backup_retention_days: 14
 timezone: America/Toronto
 
@@ -20,6 +20,3 @@ paperless_user_name: "Paperless"
 # NextCloud
 nextcloud_db_name: "nextcloud"
 nextcloud_db_user: "nextcloud"
-
-# OpenCloud
-opencloud_admin_password: "admin"
