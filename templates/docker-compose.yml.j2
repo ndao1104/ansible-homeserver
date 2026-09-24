@@ -104,7 +104,7 @@ services:
     restart: unless-stopped
     depends_on:
       - paperless-db
-      - paperless-broker
+      - paperless-redis
     volumes:
       - ./paperless-data:/usr/src/paperless/data
       - ./paperless-media:/usr/src/paperless/media
@@ -178,6 +178,12 @@ services:
       - ./uptime-kuma-data:/app/data
     environment:
       TZ: "{{ timezone }}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/"]
+      start_period: 30s
+      interval: 120s
+      timeout: 10s
+      retries: 3
     networks:
       - internal
 
