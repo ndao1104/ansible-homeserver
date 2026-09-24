@@ -1,10 +1,6 @@
 https://{{ tailscale_hostname }} {
     tls /certs/{{ tailscale_hostname }}.crt /certs/{{ tailscale_hostname }}.key
-
-    # handle /grafana/* {
-    #     reverse_proxy grafana:3000
-    # } 
-
+    
     redir /vaultwarden /vaultwarden/ 308
 
     handle /vaultwarden/* {
