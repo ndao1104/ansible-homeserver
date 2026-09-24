@@ -120,6 +120,7 @@
         - nextcloud-data
         - nextcloud-db
         - nextcloud-redis
+        - uptime-kuma-data
 
 
 
