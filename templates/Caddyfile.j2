@@ -36,7 +36,7 @@ https://{{ tailscale_hostname }} {
 
     redir /kuma /kuma/ 308
 
-    handle /kuma/* {
+    handle_path /kuma/* {
         reverse_proxy uptime-kuma:3001
     }
 }
