@@ -8,7 +8,7 @@
 #   ansible-playbook -i inventory.ini playbook.yml --ask-become-pass
 
 - name: Configure home server
-  hosts: homeserver
+  hosts: homeservers
   become: true
 
   tasks:
