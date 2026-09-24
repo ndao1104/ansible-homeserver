@@ -34,7 +34,7 @@ services:
     environment:
       - TZ={{ timezone }}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "caddy", "validate", "--config", "/etc/caddy/Caddyfile"]
       start_period: 5s
       interval: 120s
       timeout: 10s
@@ -115,7 +115,7 @@ services:
       TZ: "{{ timezone }}"
       PAPERLESS_REDIS: redis://paperless-redis:6379
       PAPERLESS_DBHOST: paperless-db
-      PAPERLESS_DBUSER: paperless
+      PAPERLESS_DBUSER: "{{ paperless_user_name }}"
       PAPERLESS_DBPASS: "{{ paperless_db_password }}"
       PAPERLESS_SECRET_KEY: "{{ paperless_secret_key }}"
       PAPERLESS_TIME_ZONE: "{{ paperless_timezone | default('America/Toronto') }}"
