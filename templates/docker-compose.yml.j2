@@ -178,7 +178,7 @@ services:
       - ./uptime-kuma-data:/app/data
     environment:
       TZ: "{{ timezone }}"
-      APP_URL: https://{{ tailscale_hostname }}/kuma
+      APP_URL: https://{{ tailscale_hostname }}:3001
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/"]
       start_period: 30s

@@ -34,9 +34,8 @@ https://{{ tailscale_hostname }} {
         reverse_proxy nextcloud:80
     }
 
-    redir /kuma /kuma/ 308
-
-    handle_path /kuma/* {
+    https://{{ tailscale_hostname }}:3001 {
+        tls /certs/{{ tailscale_hostname }}.crt /certs/{{ tailscale_hostname }}.key
         reverse_proxy uptime-kuma:3001
     }
 }
