@@ -18,6 +18,7 @@ host_vars/*.yml
 *.retry
 .ansible/
 ansible.cfg.local
+ansible.cfg
 
 # --- Inventory overrides that might contain real IPs/hostnames ---
 inventory.local.ini
