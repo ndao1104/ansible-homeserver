@@ -201,15 +201,16 @@ services:
 
     environment:
       TZ: "{{ timezone }}"
-
       OC_DOMAIN: "{{ tailscale_hostname }}"
       OC_CONFIG_DIR: /etc/opencloud
       OC_DATA_DIR: /var/lib/opencloud
       OC_URL: "https://{{ tailscale_hostname }}:9200"
+      OC_JWT_SECRET: "{{ opencloud_jwt_secret }}"
+      OC_TRANSFER_SECRET: "{{ opencloud_transfer_secret }}"
+      OC_MACHINE_AUTH_API_KEY: "{{ opencloud_machine_auth_key }}"
       PROXY_HTTP_ADDR: "0.0.0.0:9200"
       PROXY_TLS: "false"
       IDM_ADMIN_PASSWORD: "{{ opencloud_admin_password }}"
-      OC_JWT_SECRET: "{{ opencloud_jwt_secret }}"
 
     extra_hosts:
       - "{{ tailscale_hostname }}:{{ tailscale_ip }}"
