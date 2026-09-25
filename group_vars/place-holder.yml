@@ -3,8 +3,8 @@
 # backup_retention_days: 14
 # timezone: America/Toronto
 # tailscale_hostname: ""
-# docker_dir: /home//docker
-# backup_dir: /home//backups
+# docker_dir: ""
+# backup_dir: ""
 # tailscale_ip:
 
 # # Vaultwarden
@@ -12,8 +12,8 @@
 # vaultwarden_websocket_enabled: "true"
 
 # # AdGuard
-# adguard_dns_port: 53
-# adguard_web_port: 3000
+# adguard_dns_port: ""
+# adguard_web_port: ""
 
 # # Paperless
 # paperless_db_name: ""
