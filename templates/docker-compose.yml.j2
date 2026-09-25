@@ -275,9 +275,10 @@ services:
       OC_DATA_DIR: /var/lib/opencloud
       PROXY_HTTP_ADDR: "0.0.0.0:9200"
       PROXY_TLS: "false"
-      OC_URL: "https://{{ tailscale_hostname }}/opencloud"
       OC_JWT_SECRET: "{{ opencloud_jwt_secret }}"
       OC_TRANSFER_SECRET: "{{ opencloud_transfer_secret }}"
+      OC_URL: "https://{{ tailscale_hostname }}/opencloud"
+      OC_LOG_LEVEL: debug
     networks:
       - internal
 
