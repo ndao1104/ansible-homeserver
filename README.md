@@ -17,8 +17,8 @@ Before you run this against your own machine: replace the placeholder values in 
 
 ```bash
 ansible-playbook playbook.yml --ask-become-pass
-ansible-vault encrypt vault.yml --vault-password-file ~/.ansible-vault-pass
-ansible-vault view vault.yml --vault-password-file ~/.ansible-vault-pass
+ansible-vault encrypt ~/ansible-homeserver/group_vars/all/vault.yml --vault-password-file ~/.ansible-vault-pass
+ansible-vault view ~/ansible-homeserver/group_vars/all/vault.yml --vault-password-file ~/.ansible-vault-pass
 ```
 
 Adjust variables (hostnames, ports, retention policy) in `group_vars/all.yml` before running.
