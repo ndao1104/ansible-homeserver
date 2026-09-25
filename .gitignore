@@ -13,6 +13,7 @@ vault_pass.txt
 *_vault.yml
 **/vault/**
 host_vars/*.yml
+inventory.ini
 
 # --- Ansible-specific sensitive/generated files ---
 *.retry
