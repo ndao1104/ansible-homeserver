@@ -26,6 +26,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "3000:3000"
       - "3001:3001"
       - "9200:9200"
     volumes:
@@ -53,7 +54,6 @@ services:
     ports:
       - "{{ adguard_dns_port }}:53/tcp"
       - "{{ adguard_dns_port }}:53/udp"
-      - "{{ adguard_web_port }}:3000/tcp"
     environment:
       - TZ={{ timezone }}
     networks:
@@ -67,14 +67,14 @@ services:
       - ./paperless-redis:/data
     environment:
       - TZ={{ timezone }}
-    networks:
-      - internal
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       start_period: 5s
       interval: 120s
       timeout: 10s
       retries: 3
+    networks:
+      - internal
 
   paperless-db:
     image: docker.io/library/postgres:16
