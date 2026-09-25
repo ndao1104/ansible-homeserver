@@ -204,7 +204,7 @@ services:
 
       OC_DOMAIN: "{{ tailscale_hostname }}"
 
-      INITIAL_ADMIN_PASSWORD: "{{ opencloud_admin_password }}"
+      IDM_ADMIN_PASSWORD: "{{ opencloud_admin_password }}"
       OC_CONFIG_DIR: /etc/opencloud
       OC_DATA_DIR: /var/lib/opencloud
 
@@ -217,7 +217,7 @@ services:
       OC_URL: "https://{{ tailscale_hostname }}:9200"
 
     extra_hosts:
-      - "sf2.bone-searobin.ts.net:{{ tailscale_ip }}"
+      - "{{ tailscale_hostname }}:{{ tailscale_ip }}"
 
     networks:
       - internal
