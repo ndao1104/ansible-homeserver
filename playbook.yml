@@ -99,14 +99,9 @@
         - paperless-consume
         - paperless-db
         - paperless-redis
-        # - prometheus-data
-        # - grafana-data
         - beszel-data
         - beszel-socket
         - beszel-agent-data
-        # - nextcloud-data
-        # - nextcloud-db
-        # - nextcloud-redis
         - uptime-kuma-data
         - opencloud-config
         - opencloud-data
@@ -136,12 +131,6 @@
         owner: "{{  lookup('env', 'USER') }}"
         mode: "0644"
 
-    # - name: Deploy Prometheus config
-    #   ansible.builtin.template:
-    #     src: prometheus.yml.j2
-    #     dest: "{{ docker_dir }}/prometheus.yml"
-    #     owner: "{{  lookup('env', 'USER') }}"
-    #     mode: "0644"
 
     # NOTE: Tailscale certs (surface2/.key) must be
     # generated manually first with `tailscale cert <hostname>` and placed
@@ -194,21 +183,6 @@
         user: "{{  lookup('env', 'USER') }}"
         job: "/home/{{  lookup('env', 'USER') }}/backup-paperless.sh >> {{ backup_dir }}/backup.log 2>&1"
     
-    # - name: Deploy Nextcloud backup script
-    #   ansible.builtin.template:
-    #     src: backup-nextcloud.sh.j2
-    #     dest: "/home/{{  lookup('env', 'USER') }}/backup-nextcloud.sh"
-    #     owner: "{{  lookup('env', 'USER') }}"
-    #     mode: "0755"
-
-    # - name: Schedule nightly Nextcloud backup
-    #   ansible.builtin.cron:
-    #     name: "Nextcloud backup"
-    #     minute: "0"
-    #     hour: "3"
-    #     user: "{{  lookup('env', 'USER') }}"
-    #     job: "/home/{{  lookup('env', 'USER') }}/backup-nextcloud.sh >> {{ backup_dir }}/backup.log 2>&1"
-
     - name: Deploy OpenCloud backup script
       ansible.builtin.template:
         src: backup-opencloud.sh.j2
