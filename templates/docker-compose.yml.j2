@@ -216,6 +216,9 @@ services:
 
       OC_URL: "https://{{ tailscale_hostname }}:9200"
 
+    extra_hosts:
+      - "sf2.bone-searobin.ts.net:{{ tailscale_ip }}"
+
     networks:
       - internal
 
