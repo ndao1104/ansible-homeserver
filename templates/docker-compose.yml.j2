@@ -267,20 +267,19 @@ services:
     volumes:
       - ./opencloud-config:/etc/opencloud
       - ./opencloud-data:/var/lib/opencloud
-  environment:
-    TZ: "{{ timezone }}"
-    OC_DOMAIN: "{{ tailscale_hostname }}"
-    INITIAL_ADMIN_PASSWORD: "{{ opencloud_admin_password }}"
-    OC_CONFIG_DIR: /etc/opencloud
-    OC_DATA_DIR: /var/lib/opencloud
-    PROXY_HTTP_ADDR: "0.0.0.0:9200"
-    PROXY_TLS: "false"
-    OC_URL: "https://{{ tailscale_hostname }}"
-    OC_JWT_SECRET: "{{ opencloud_jwt_secret }}"
-    OC_TRANSFER_SECRET: "{{ opencloud_transfer_secret }}"
-
-  networks:
-    - internal
+    environment:
+      TZ: "{{ timezone }}"
+      OC_DOMAIN: "{{ tailscale_hostname }}"
+      INITIAL_ADMIN_PASSWORD: "{{ opencloud_admin_password }}"
+      OC_CONFIG_DIR: /etc/opencloud
+      OC_DATA_DIR: /var/lib/opencloud
+      PROXY_HTTP_ADDR: "0.0.0.0:9200"
+      PROXY_TLS: "false"
+      OC_URL: "https://{{ tailscale_hostname }}"
+      OC_JWT_SECRET: "{{ opencloud_jwt_secret }}"
+      OC_TRANSFER_SECRET: "{{ opencloud_transfer_secret }}"
+    networks:
+      - internal
 
 networks:
   internal:
