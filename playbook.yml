@@ -4,7 +4,7 @@
   hosts: homeservers
   become: true
   vars_files:
-    - "{{ lookup('env', 'USER')) }}/secrets/vault.yml"
+    - "{{ lookup('env', 'HOME') }}/secrets/vault.yml"
 
   tasks:
     # ---------------------------------------------------------------
