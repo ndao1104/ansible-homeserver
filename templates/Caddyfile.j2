@@ -23,23 +23,23 @@ https://{{ tailscale_hostname }} {
             }
         }
     }
- 
-    # redir /nextcloud /nextcloud/ 308
-
-    # handle_path /nextcloud/* {
-    #     reverse_proxy nextcloud:80
-    # }
 
     redir /opencloud /opencloud/ 308
 
-    {{ tailscale_hostname }}:9300 {
-        tls /path/to/your/cert.pem /path/to/your/key.pem
+    handle /opencloud/* {
+        uri strip_prefix /opencloud
         reverse_proxy opencloud:9200
     }
-
 }
 
 https://{{ tailscale_hostname }}:3001 {
     tls /certs/{{ tailscale_hostname }}.crt /certs/{{ tailscale_hostname }}.key
     reverse_proxy uptime-kuma:3001
 }
+
+
+# redir /nextcloud /nextcloud/ 308
+
+    # handle_path /nextcloud/* {
+    #     reverse_proxy nextcloud:80
+    # }
