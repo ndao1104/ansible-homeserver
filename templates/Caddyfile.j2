@@ -24,11 +24,6 @@ https://{{ tailscale_hostname }} {
         }
     }
 
-    redir /opencloud /opencloud/ 308
-
-    handle /opencloud/* {
-        reverse_proxy opencloud:9200
-    }
 }
 
 https://{{ tailscale_hostname }}:3001 {
