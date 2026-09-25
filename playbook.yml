@@ -164,7 +164,7 @@
       ansible.builtin.cron:
         name: "Vaultwarden backup"
         minute: "0"
-        hour: "2"
+        hour: "4"
         user: "{{  lookup('env', 'USER') }}"
         job: "/home/{{  lookup('env', 'USER') }}/backup-vaultwarden.sh >> {{ backup_dir }}/backup.log 2>&1"
 
@@ -178,8 +178,8 @@
     - name: Schedule nightly Paperless backup
       ansible.builtin.cron:
         name: "Paperless backup"
-        minute: "30"
-        hour: "2"
+        minute: "0"
+        hour: "4"
         user: "{{  lookup('env', 'USER') }}"
         job: "/home/{{  lookup('env', 'USER') }}/backup-paperless.sh >> {{ backup_dir }}/backup.log 2>&1"
     
@@ -193,8 +193,8 @@
     - name: Schedule nightly OpenCloud backup
       ansible.builtin.cron:
         name: "OpenCloud backup"
-        minute: "30"
-        hour: "3"
+        minute: "0"
+        hour: "4"
         user: "{{  lookup('env', 'USER') }}"
         job: "/home/{{  lookup('env', 'USER') }}/backup-opencloud.sh >> {{ backup_dir }}/backup.log 2>&1"
 
