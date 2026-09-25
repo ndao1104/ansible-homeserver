@@ -1,7 +1,0 @@
-# General
-backup_retention_days: 14
-timezone: America/Toronto
-
-# Vaultwarden
-vaultwarden_signups_allowed: "false"
-vaultwarden_websocket_enabled: "true"

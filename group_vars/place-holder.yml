@@ -1,0 +1,32 @@
+---
+# # General
+# backup_retention_days: 14
+# timezone: America/Toronto
+# tailscale_hostname: ""
+# docker_dir: /home//docker
+# backup_dir: /home//backups
+# tailscale_ip:
+
+# # Vaultwarden
+# vaultwarden_signups_allowed: "false"
+# vaultwarden_websocket_enabled: "true"
+
+# # AdGuard
+# adguard_dns_port: 53
+# adguard_web_port: 3000
+
+# # Paperless
+# paperless_db_name: ""
+# paperless_user_name: ""
+# paperless_db_password: ""
+# paperless_secret_key: ""
+
+# # beszel
+# beszel_token: ""
+# beszel_key: ""
+
+# # opencloud
+# opencloud_admin_password: ""
+# opencloud_jwt_secret: ""
+# opencloud_transfer_secret: ""
+# opencloud_machine_auth_key: ""

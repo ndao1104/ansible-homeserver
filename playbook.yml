@@ -3,6 +3,8 @@
 - name: Configure home server
   hosts: homeservers
   become: true
+  vars_files:
+    - "{{ lookup('env', 'HOME') }}/secrets/vault.yml"
 
   tasks:
     # ---------------------------------------------------------------
@@ -48,7 +50,7 @@
 
     - name: Add user to docker group
       ansible.builtin.user:
-        name: "{{  target_user }}"
+        name: "{{  lookup('env', 'HOME' }}"
         groups: docker
         append: true
 
@@ -76,14 +78,14 @@
       ansible.builtin.file:
         path: "{{ docker_dir }}"
         state: directory
-        owner: "{{  target_user }}"
+        owner: "{{  lookup('env', 'HOME' }}"
         mode: "0755"
 
     - name: Create data/cert subdirectories
       ansible.builtin.file:
         path: "{{ docker_dir }}/{{ item }}"
         state: directory
-        owner: "{{  target_user }}"
+        owner: "{{  lookup('env', 'HOME' }}"
         mode: "0755"
       loop:
         - vaultwarden-data
@@ -124,21 +126,21 @@
       ansible.builtin.template:
         src: docker-compose.yml.j2
         dest: "{{ docker_dir }}/docker-compose.yml"
-        owner: "{{  target_user }}"
+        owner: "{{  lookup('env', 'HOME' }}"
         mode: "0644"
 
     - name: Deploy Caddyfile
       ansible.builtin.template:
         src: Caddyfile.j2
         dest: "{{ docker_dir }}/Caddyfile"
-        owner: "{{  target_user }}"
+        owner: "{{  lookup('env', 'HOME' }}"
         mode: "0644"
 
     # - name: Deploy Prometheus config
     #   ansible.builtin.template:
     #     src: prometheus.yml.j2
     #     dest: "{{ docker_dir }}/prometheus.yml"
-    #     owner: "{{  target_user }}"
+    #     owner: "{{  lookup('env', 'HOME' }}"
     #     mode: "0644"
 
     # NOTE: Tailscale certs (surface2/.key) must be
@@ -159,14 +161,14 @@
       ansible.builtin.file:
         path: "{{ backup_dir }}"
         state: directory
-        owner: "{{  target_user }}"
+        owner: "{{  lookup('env', 'HOME' }}"
         mode: "0755"
 
     - name: Deploy backup script
       ansible.builtin.template:
         src: backup-vaultwarden.sh.j2
-        dest: "/home/{{  target_user }}/backup-vaultwarden.sh"
-        owner: "{{  target_user }}"
+        dest: "/home/{{  lookup('env', 'HOME' }}/backup-vaultwarden.sh"
+        owner: "{{  lookup('env', 'HOME' }}"
         mode: "0755"
 
     - name: Schedule nightly Vaultwarden backup
@@ -174,14 +176,14 @@
         name: "Vaultwarden backup"
         minute: "0"
         hour: "2"
-        user: "{{  target_user }}"
-        job: "/home/{{  target_user }}/backup-vaultwarden.sh >> {{ backup_dir }}/backup.log 2>&1"
+        user: "{{  lookup('env', 'HOME' }}"
+        job: "/home/{{  lookup('env', 'HOME' }}/backup-vaultwarden.sh >> {{ backup_dir }}/backup.log 2>&1"
 
     - name: Deploy Paperless backup script
       ansible.builtin.template:
         src: backup-paperless.sh.j2
-        dest: "/home/{{  target_user }}/backup-paperless.sh"
-        owner: "{{  target_user }}"
+        dest: "/home/{{  lookup('env', 'HOME' }}/backup-paperless.sh"
+        owner: "{{  lookup('env', 'HOME' }}"
         mode: "0755"
 
     - name: Schedule nightly Paperless backup
@@ -189,14 +191,14 @@
         name: "Paperless backup"
         minute: "30"
         hour: "2"
-        user: "{{  target_user }}"
-        job: "/home/{{  target_user }}/backup-paperless.sh >> {{ backup_dir }}/backup.log 2>&1"
+        user: "{{  lookup('env', 'HOME' }}"
+        job: "/home/{{  lookup('env', 'HOME' }}/backup-paperless.sh >> {{ backup_dir }}/backup.log 2>&1"
     
     # - name: Deploy Nextcloud backup script
     #   ansible.builtin.template:
     #     src: backup-nextcloud.sh.j2
-    #     dest: "/home/{{  target_user }}/backup-nextcloud.sh"
-    #     owner: "{{  target_user }}"
+    #     dest: "/home/{{  lookup('env', 'HOME' }}/backup-nextcloud.sh"
+    #     owner: "{{  lookup('env', 'HOME' }}"
     #     mode: "0755"
 
     # - name: Schedule nightly Nextcloud backup
@@ -204,14 +206,14 @@
     #     name: "Nextcloud backup"
     #     minute: "0"
     #     hour: "3"
-    #     user: "{{  target_user }}"
-    #     job: "/home/{{  target_user }}/backup-nextcloud.sh >> {{ backup_dir }}/backup.log 2>&1"
+    #     user: "{{  lookup('env', 'HOME' }}"
+    #     job: "/home/{{  lookup('env', 'HOME' }}/backup-nextcloud.sh >> {{ backup_dir }}/backup.log 2>&1"
 
     - name: Deploy OpenCloud backup script
       ansible.builtin.template:
         src: backup-opencloud.sh.j2
-        dest: "/home/{{  target_user }}/backup-opencloud.sh"
-        owner: "{{  target_user }}"
+        dest: "/home/{{  lookup('env', 'HOME' }}/backup-opencloud.sh"
+        owner: "{{  lookup('env', 'HOME' }}"
         mode: "0755"
 
     - name: Schedule nightly OpenCloud backup
@@ -219,8 +221,8 @@
         name: "OpenCloud backup"
         minute: "30"
         hour: "3"
-        user: "{{  target_user }}"
-        job: "/home/{{  target_user }}/backup-opencloud.sh >> {{ backup_dir }}/backup.log 2>&1"
+        user: "{{  lookup('env', 'HOME' }}"
+        job: "/home/{{  lookup('env', 'HOME' }}/backup-opencloud.sh >> {{ backup_dir }}/backup.log 2>&1"
 
   handlers:
     - name: Restart systemd-logind
