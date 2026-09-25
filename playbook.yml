@@ -102,9 +102,9 @@
         - beszel-data
         - beszel-socket
         - beszel-agent-data
-        - nextcloud-data
-        - nextcloud-db
-        - nextcloud-redis
+        # - nextcloud-data
+        # - nextcloud-db
+        # - nextcloud-redis
         - uptime-kuma-data
         - opencloud-config
         - opencloud-data
@@ -192,20 +192,20 @@
         user: "{{  target_user }}"
         job: "/home/{{  target_user }}/backup-paperless.sh >> {{ backup_dir }}/backup.log 2>&1"
     
-    - name: Deploy Nextcloud backup script
-      ansible.builtin.template:
-        src: backup-nextcloud.sh.j2
-        dest: "/home/{{  target_user }}/backup-nextcloud.sh"
-        owner: "{{  target_user }}"
-        mode: "0755"
+    # - name: Deploy Nextcloud backup script
+    #   ansible.builtin.template:
+    #     src: backup-nextcloud.sh.j2
+    #     dest: "/home/{{  target_user }}/backup-nextcloud.sh"
+    #     owner: "{{  target_user }}"
+    #     mode: "0755"
 
-    - name: Schedule nightly Nextcloud backup
-      ansible.builtin.cron:
-        name: "Nextcloud backup"
-        minute: "0"
-        hour: "3"
-        user: "{{  target_user }}"
-        job: "/home/{{  target_user }}/backup-nextcloud.sh >> {{ backup_dir }}/backup.log 2>&1"
+    # - name: Schedule nightly Nextcloud backup
+    #   ansible.builtin.cron:
+    #     name: "Nextcloud backup"
+    #     minute: "0"
+    #     hour: "3"
+    #     user: "{{  target_user }}"
+    #     job: "/home/{{  target_user }}/backup-nextcloud.sh >> {{ backup_dir }}/backup.log 2>&1"
 
     - name: Deploy OpenCloud backup script
       ansible.builtin.template:

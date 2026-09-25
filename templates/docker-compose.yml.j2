@@ -189,76 +189,76 @@ services:
     networks:
       - internal
 
-  nextcloud-db:
-    image: postgres:16
-    container_name: nextcloud-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: "{{ nextcloud_db_name }}"
-      POSTGRES_USER: "{{ nextcloud_db_user }}"
-      POSTGRES_PASSWORD: "{{ nextcloud_db_password }}"
-      TZ: "{{ timezone }}"
-    volumes:
-      - ./nextcloud-db:/var/lib/postgresql/data
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U {{ nextcloud_db_user }} -d {{ nextcloud_db_name }}",
-        ]
-      start_period: 10s
-      interval: 120s
-      timeout: 10s
-      retries: 3
-    networks:
-      - internal
+  # nextcloud-db:
+  #   image: postgres:16
+  #   container_name: nextcloud-db
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_DB: "{{ nextcloud_db_name }}"
+  #     POSTGRES_USER: "{{ nextcloud_db_user }}"
+  #     POSTGRES_PASSWORD: "{{ nextcloud_db_password }}"
+  #     TZ: "{{ timezone }}"
+  #   volumes:
+  #     - ./nextcloud-db:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         "pg_isready -U {{ nextcloud_db_user }} -d {{ nextcloud_db_name }}",
+  #       ]
+  #     start_period: 10s
+  #     interval: 120s
+  #     timeout: 10s
+  #     retries: 3
+  #   networks:
+  #     - internal
 
-  nextcloud-redis:
-    image: redis:7-alpine
-    container_name: nextcloud-redis
-    restart: unless-stopped
-    environment:
-      TZ: "{{ timezone }}"
-    volumes:
-      - ./nextcloud-redis:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      start_period: 5s
-      interval: 120s
-      timeout: 10s
-      retries: 3
-    networks:
-      - internal
+  # nextcloud-redis:
+  #   image: redis:7-alpine
+  #   container_name: nextcloud-redis
+  #   restart: unless-stopped
+  #   environment:
+  #     TZ: "{{ timezone }}"
+  #   volumes:
+  #     - ./nextcloud-redis:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     start_period: 5s
+  #     interval: 120s
+  #     timeout: 10s
+  #     retries: 3
+  #   networks:
+  #     - internal
 
-  nextcloud:
-    image: nextcloud:latest
-    restart: unless-stopped
-    depends_on:
-      - nextcloud-db
-      - nextcloud-redis
-    volumes:
-      - ./nextcloud-data:/var/www/html
-    environment:
-      TZ: "{{ timezone }}"
-      POSTGRES_HOST: nextcloud-db
-      POSTGRES_DB: nextcloud
-      POSTGRES_USER: nextcloud
-      POSTGRES_PASSWORD: "{{ nextcloud_db_password }}"
-      REDIS_HOST: nextcloud-redis
+  # nextcloud:
+  #   image: nextcloud:latest
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - nextcloud-db
+  #     - nextcloud-redis
+  #   volumes:
+  #     - ./nextcloud-data:/var/www/html
+  #   environment:
+  #     TZ: "{{ timezone }}"
+  #     POSTGRES_HOST: nextcloud-db
+  #     POSTGRES_DB: nextcloud
+  #     POSTGRES_USER: nextcloud
+  #     POSTGRES_PASSWORD: "{{ nextcloud_db_password }}"
+  #     REDIS_HOST: nextcloud-redis
 
-      NEXTCLOUD_TRUSTED_DOMAINS: "{{ tailscale_hostname }}"
-      OVERWRITEHOST: "{{ tailscale_hostname }}"
-      OVERWRITEPROTOCOL: https
-      OVERWRITEWEBROOT: /nextcloud
-      OVERWRITECLIURL: "https://{{ tailscale_hostname }}/nextcloud"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/status.php"]
-      start_period: 30s
-      interval: 120s
-      timeout: 10s
-      retries: 3
-    networks:
-      - internal
+  #     NEXTCLOUD_TRUSTED_DOMAINS: "{{ tailscale_hostname }}"
+  #     OVERWRITEHOST: "{{ tailscale_hostname }}"
+  #     OVERWRITEPROTOCOL: https
+  #     OVERWRITEWEBROOT: /nextcloud
+  #     OVERWRITECLIURL: "https://{{ tailscale_hostname }}/nextcloud"
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost/status.php"]
+  #     start_period: 30s
+  #     interval: 120s
+  #     timeout: 10s
+  #     retries: 3
+  #   networks:
+  #     - internal
 
   opencloud:
     image: opencloudeu/opencloud:2
@@ -269,7 +269,7 @@ services:
       - ./opencloud-data:/var/lib/opencloud
     environment:
       TZ: "{{ timezone }}"
-      OC_DOMAIN: "{{ tailscale_hostname }}"
+      OC_DOMAIN: "{{ tailscale_hostname }}:9300"
       INITIAL_ADMIN_PASSWORD: "{{ opencloud_admin_password }}"
       OC_CONFIG_DIR: /etc/opencloud
       OC_DATA_DIR: /var/lib/opencloud
@@ -277,7 +277,9 @@ services:
       PROXY_TLS: "false"
       OC_JWT_SECRET: "{{ opencloud_jwt_secret }}"
       OC_TRANSFER_SECRET: "{{ opencloud_transfer_secret }}"
-      OC_URL: "https://{{ tailscale_hostname }}/opencloud"
+      OC_URL: "https://{{ tailscale_hostname }}:9300"
+    networks:
+      - internal
     networks:
       - internal
 

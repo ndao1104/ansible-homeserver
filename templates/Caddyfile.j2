@@ -24,15 +24,16 @@ https://{{ tailscale_hostname }} {
         }
     }
  
-    redir /nextcloud /nextcloud/ 308
+    # redir /nextcloud /nextcloud/ 308
 
-    handle_path /nextcloud/* {
-        reverse_proxy nextcloud:80
-    }
+    # handle_path /nextcloud/* {
+    #     reverse_proxy nextcloud:80
+    # }
 
     redir /opencloud /opencloud/ 308
 
-    handle_path /opencloud/* {
+    {{ tailscale_hostname }}:9300 {
+        tls /path/to/your/cert.pem /path/to/your/key.pem
         reverse_proxy opencloud:9200
     }
 
