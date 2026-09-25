@@ -68,7 +68,7 @@ The `prometheus-data` directory must be owned by the same UID the Prometheus con
 ├── inventory.ini              # target host(s) — placeholder values
 ├── playbook.yml                # main playbook
 ├── group_vars/
-│   └── all.yml                 # configurable variables — placeholder values
+│   └── placeholder.yml                 # configurable variables — placeholder values
 └── templates/
     ├── docker-compose.yml.j2
     ├── Caddyfile.j2
