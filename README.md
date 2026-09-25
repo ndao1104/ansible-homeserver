@@ -21,12 +21,21 @@ ansible-vault encrypt ~/ansible-homeserver/group_vars/all/vault.yml --vault-pass
 ansible-vault view ~/ansible-homeserver/group_vars/all/vault.yml --vault-password-file ~/.ansible-vault-pass
 ansible-vault edit ~/ansible-homeserver/group_vars/all/vault.yml --vault-password-file ~/.ansible-vault-pass
 
-
 docker run --rm -it \
   -v ~/docker/opencloud-config:/etc/opencloud \
   -v ~/docker/opencloud-data:/var/lib/opencloud \
   opencloudeu/opencloud:2 \
   idm resetpassword
+
+docker run --rm -it \
+  -v ~/docker/opencloud-config:/etc/opencloud \
+  -v ~/docker/opencloud-data:/var/lib/opencloud \
+  -e OC_CONFIG_DIR=/etc/opencloud \
+  -e OC_DATA_DIR=/var/lib/opencloud \
+  -e IDM_ADMIN_PASSWORD='YOUR_ADMIN_PASSWORD' \
+  opencloudeu/opencloud:2 \
+  init
+
 ```
 
 Adjust variables (hostnames, ports, retention policy) in `group_vars/all.yml` before running.
