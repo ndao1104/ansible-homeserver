@@ -33,9 +33,7 @@ https://{{ tailscale_hostname }} {
     redir /opencloud /opencloud/ 308
 
     handle_path /opencloud/* {
-        reverse_proxy opencloud:9200 {
-            header_up Host {host}
-        }
+        reverse_proxy opencloud:9200
     }
 
 }
