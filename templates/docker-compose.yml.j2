@@ -277,8 +277,7 @@ services:
       PROXY_TLS: "false"
       OC_JWT_SECRET: "{{ opencloud_jwt_secret }}"
       OC_TRANSFER_SECRET: "{{ opencloud_transfer_secret }}"
-      OC_URL: "https://{{ tailscale_hostname }}/opencloud"
-      OC_LOG_LEVEL: debug
+      OC_URL: "https://{{ tailscale_hostname }}"
     networks:
       - internal
 
