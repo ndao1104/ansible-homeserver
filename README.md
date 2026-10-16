@@ -10,7 +10,7 @@ Before you run this against your own machine: replace the placeholder values in 
 * Docker + Docker Compose installation
 * Freeing port 53 (disabling systemd-resolved's stub listener) so AdGuard Home can bind to it
 * Deploying `docker-compose.yml` and `Caddyfile` from templates
-* Starting the full container stack (Vaultwarden, Caddy, AdGuard, Paperless-ngx, Grafana, Prometheus, cAdvisor, Beszel hub + agent)
+* Starting the full container stack (Vaultwarden, Caddy, AdGuard, Paperless-ngx, Grafana, Prometheus, cAdvisor, Beszel hub + agent, uptime Kuma)
 * Setting up nightly backup scripts + cron jobs for Vaultwarden and Paperless
 
 ## Usage
